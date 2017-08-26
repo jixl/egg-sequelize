@@ -2,23 +2,23 @@
 
 const assert = require('assert');
 
-module.exports = app => {
+module.exports = (app, model) => {
   const { STRING, INTEGER } = app.Sequelize;
-  const User = app.model.define('user', {
+  const User = model.define('user', {
     name: STRING(30),
     age: INTEGER,
   });
 
   User.associate = function() {
-    assert.ok(app.model.User);
-    assert.ok(app.model.Post);
-    app.model.User.hasMany(app.model.Post, { as: 'posts', foreignKey: 'user_id' });
+    assert.ok(model.User);
+    assert.ok(model.Post);
+    model.User.hasMany(model.Post, { as: 'posts', foreignKey: 'user_id' });
   };
 
   User.test = function* () {
     assert(app.config);
-    assert(app.model.User === this);
-    const monkey = yield app.model.Monkey.create({ name: 'The Monkey' });
+    assert(model.User === this);
+    const monkey = yield model.Monkey.create({ name: 'The Monkey' });
     assert(monkey.id);
     assert(monkey.isNewRecord === false);
     assert(monkey.name === 'The Monkey');

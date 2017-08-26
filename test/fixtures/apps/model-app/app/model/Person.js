@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = app => {
+module.exports = (app, model) => {
   const { STRING } = app.Sequelize;
-  const Person = app.model.define('person', {
+  const Person = model.define('person', {
     name: STRING(30),
   });
 

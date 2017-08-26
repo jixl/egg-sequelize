@@ -22,6 +22,12 @@ describe('test/plugin.test.js', () => {
       assert(app.model);
     });
 
+    it('createSequelizeInstance function is define', () => {
+      assert(app.createSequelizeInstance);
+      const isFunction = app.createSequelizeInstance instanceof Function;
+      assert(isFunction);
+    });
+
     it('ctx model property getter', () => {
       const ctx = app.mockContext();
       assert.ok(ctx.model);
@@ -44,6 +50,32 @@ describe('test/plugin.test.js', () => {
     });
   });
 
+  describe('Domain createSequelizeInstance', () => {
+    before(() => {
+      app.createSequelizeInstance({
+        database: 'test',
+        domain: {
+          model: 'tmodel',
+          dir: 'app/model',
+        },
+      });
+    });
+
+    it('domain (tmodel) sequelize init success', () => {
+      assert(app.tmodel);
+    });
+
+    it('domain (tmodel) not load non Sequelize files', function* () {
+      assert(!('Other' in app.tmodel));
+    });
+
+    it('has right tableName', () => {
+      assert(app.tmodel.Person.tableName === 'people');
+      assert(app.tmodel.User.tableName === 'users');
+      assert(app.tmodel.Monkey.tableName === 'the_monkeys');
+    });
+  });
+
   describe('Database options', () => {
     let config;
 
@@ -53,6 +85,7 @@ describe('test/plugin.test.js', () => {
 
     it('should work with default config', function* () {
       assert(config.define.freezeTableName === false);
+      assert(config.define.underscored === true);
       assert(config.port === '3306');
       assert(config.username === 'root');
       assert(config.password === '');
@@ -66,6 +99,8 @@ describe('test/plugin.test.js', () => {
       assert(config.pool.idle === 10000);
       assert(config.timezone === '+08:01');
       assert(config.storage === 'db/test-foo.sqlite');
+      assert(config.domain.model === 'model');
+      assert(config.domain.dir === 'app/model');
     });
   });
 

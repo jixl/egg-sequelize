@@ -14,6 +14,10 @@ exports.sequelize = {
   },
   storage: 'db/test-foo.sqlite',
   timezone: '+08:01',
+  domain: {
+    model: 'model',
+    dir: 'app/model',
+  },
 };
 
 exports.keys = '0jN4Fw7ZBjo4xtrLklDg4g==';
