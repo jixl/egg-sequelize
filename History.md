@@ -1,3 +1,8 @@
+3.1.1 / 2017-08-26
+==================
+
+  * docs: add dynamic creation sequelize example and update the example with create model
+  * feat(loader): Support and dynamic creation more sequelize instance
 
 3.1.0 / 2017-08-03
 ==================

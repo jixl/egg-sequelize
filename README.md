@@ -48,6 +48,10 @@ exports.sequelize = {
   port: '3306',
   username: 'root',
   password: '',
+  domain: {
+    model: 'model',
+    dir: 'app/model',
+  },
 };
 ```
 
@@ -97,10 +101,10 @@ Define a model first.
 ```js
 // app/model/user.js
 
-module.exports = app => {
+module.exports = (app, model) => {
   const { STRING, INTEGER, DATE } = app.Sequelize;
 
-  const User = app.model.define('user', {
+  const User = model.define('user', {
     login: STRING,
     name: STRING(30),
     password: STRING(32),
@@ -148,10 +152,10 @@ module.exports = app => {
 ```js
 // app/model/post.js
 
-module.exports = app => {
+module.exports = (app, model) => {
   const { STRING, INTEGER, DATE } = app.Sequelize;
 
-  const Post = app.model.define('Post', {
+  const Post = model.define('Post', {
     name: STRING(30),
     user_id: INTEGER,
     created_at: DATE,
@@ -159,7 +163,7 @@ module.exports = app => {
   });
 
   Post.associate = function() {
-    app.model.Post.belongsTo(app.model.User, { as: 'user' });
+    model.Post.belongsTo(model.User, { as: 'user' });
   }
 
   return Post;
@@ -196,6 +200,31 @@ module.exports = app => {
     }
   }
 }
+```
+
+## Dynamic creation more sequelize instance
+
+```js
+  // app/extend/context.js
+  module.exports = {
+    get domain(){
+      const config = {
+        database: 'test',
+        domain: {
+          model: 'tmodel',
+          dir: 'app/model',
+        },
+      };
+
+      let model = this.app[config.domain.model];
+      if(!model) {
+        app.createSequelizeInstance(config);
+        model = this.app[config.domain.model];
+      }
+
+      return model;
+    }
+  };
 ```
 
 ## Sync model to db
